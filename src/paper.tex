@@ -1,5 +1,12 @@
 \documentclass{article}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1em}
+\setlength{\columnsep}{3cm}
+
+\usepackage{xcolor}
+\usepackage{multicol}
 \usepackage{unicode-math}
+\usepackage{listings}
 \usepackage{lualatex-math}
 \setmainfont[
   BoldFont={STIX2Text-Bold},
@@ -11,9 +18,232 @@
 \usepackage{biblatex}
 \addbibresource{references.bib}
 
+\usepackage{tikz}
+\usetikzlibrary{automata, trees, positioning, arrows, fit, matrix, shapes.geometric, shapes.misc, calc}
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\newcommand\Var[1]{\textcolor{blue}{#1}}
+\newcommand\Num[1]{\textcolor{orange}{#1}}
+
+\lstnewenvironment{CITY}[1][]
+{   
+    \lstset{
+        mathescape=true,
+        basicstyle=\footnotesize, 
+        basicstyle=\ttfamily,
+        stringstyle=\color{teal},
+        morestring=[b]",
+        showstringspaces=false,
+        keywords={,let,in,city,road,building, for, to, do, done, procedure, lambda,park,field,tree,junction,river,lake,},
+        escapeinside={@}{@},
+        xleftmargin=.04\textwidth,
+        #1
+    }
+}
+{}
+
+\title{City}
+
 \begin{document}
-\section{Section}
-Text \cite{knuth_fa} text $\Rightarrow$
+
+Jezik za opis infrastrukture v mestu.
+
+\section{Osnova}
+\begin{multicols}{2}
+\begin{CITY}
+  city "Fiesa" {
+    road "Oljcna pot" {
+      arc((@\Num{1}@, @\Num{1}@), (@\Num{2}@, @\Num{2}@), @\Num{20}@);
+      arc((@\Num{2}@, @\Num{2}@), (@\Num{3}@, @\Num{1}@), @\Num{40}@);
+      line((@\Num{2}@, @\Num{2}@), (@\Num{2}@, @\Num{5}@));
+      arc((@\Num{2}@, @\Num{3}@), (@\Num{5}@, @\Num{4}@), @\Num{20}@);
+      line((@\Num{5}@, @\Num{4}@), (@\Num{6}@, @\Num{4}@))
+    };
+    building "Soncne terase" {
+      box((@\Num{3}@, @\Num{2}@), (@\Num{5}@, @\Num{3}@))
+    };
+    building "Dom Fiesa" {
+      box((@\Num{0.5}@, @\Num{3.5}@), (@\Num{1.5}@, @\Num{2.5}@))
+    };
+    building "LaRocca" {
+      box((@\Num{0.5}@, @\Num{5}@), (@\Num{1.5}@, @\Num{4}@))
+    };
+    building "Hotel Fiesa" {
+      box((@\Num{1.75}@, @\Num{1.5}@), (@\Num{2.25}@, @\Num{1}@))
+    }
+  }
+\end{CITY}
+
+\columnbreak
+
+\begin{tikzpicture}
+  \draw [line width=2mm, color=white!60!gray, line cap=round] (1, 1) to[bend left=20] (2, 2);
+  \draw [line width=2mm, color=white!60!gray, line cap=round]  (2, 2) to[bend left=40] (3, 1);
+  \draw [line width=2mm, color=white!60!gray, line cap=round]  (2, 2) to (2, 5);
+  \draw [line width=2mm, color=white!60!gray, line cap=round]  (2, 3) to[bend left=20] (5, 4);
+  \draw [line width=2mm, color=white!60!gray, line cap=round]  (5, 4) to (6, 4);
+
+  \fill [thick, fill=white!60!gray, draw=gray] (3, 2) rectangle (5, 3);
+  \fill [thick, fill=white!60!gray, draw=gray] (0.5, 3.5) rectangle (1.5, 2.5);
+  \fill [thick, fill=white!60!gray, draw=gray] (0.5, 5) rectangle (1.5, 4);
+  \fill [thick, fill=white!60!gray, draw=gray] (1.75, 1.5) rectangle (2.25, 1);
+
+\end{tikzpicture}
+\end{multicols}
+
+
+\subsection{Konstrukti}
+
+\subsubsection{Števila}
+\begin{CITY}
+  @\Num{1}@
+  @\Num{1.2}@
+\end{CITY}
+
+\subsubsection{Nizi}
+\begin{CITY}
+  "NIZ"
+\end{CITY}
+
+\subsubsection{Točke}
+\begin{CITY}
+  (@\Var{X}@, @\Var{Y}@)
+\end{CITY}
+
+\subsubsection{Bloki}
+
+\begin{CITY}
+  city "NAME" {
+    @\Var{BLOCKS}@
+  }
+
+  road "NAME" {
+    @\Var{COMMANDS}@
+  }
+
+  building "NAME" {
+    @\Var{COMMANDS}@
+  }
+\end{CITY}
+
+\subsubsection{Ukazi}
+
+\begin{CITY}
+  line(@\Var{POINT}@, @\Var{POINT}@)
+
+  arc(@\Var{POINT}@, @\Var{POINT}@, @\Var{BEND}@)
+
+  box(@\Var{POINT}@, @\Var{POINT}@)
+
+  circ(@\Var{POINT}@, @\Var{DIAMETER}@)
+\end{CITY}
+
+\section{Nadgradnja}
+
+\subsection{Spremenljivke}
+
+\begin{CITY}
+  road "Oljcna pot" {
+    let p = (@\Num{2}@, @\Num{2}@);
+    let q = (@\Num{5}@, @\Num{4}@);
+
+    arc((@\Num{1}@, @\Num{1}@), p, @\Num{20}@);
+    arc(p, (@\Num{3}@, @\Num{1}@), @\Num{40}@);
+    line(p, (@\Num{2}@, @\Num{5}@));
+    arc((@\Num{2}@, @\Num{3}@), q, @\Num{20}@);
+    line(q, (@\Num{6}@, @\Num{4}@))
+  }
+\end{CITY}
+
+\subsection{Izjave}
+
+\begin{CITY}
+  road "Oljcna pot" {
+    let bound = 1;
+    let s = (@bound@, @bound@);
+    let p = (fst(s) + @\Num{1}@, snd(s) + @\Num{1}@);
+    let q = (@\Num{5}@, @\Num{4}@);
+
+    arc(s, p, @\Num{20}@);
+    arc(p, (@\Num{3}@, @bound@), @\Num{40}@);
+    line(p, (@\Num{2}@, @\Num{5}@));
+    arc((@\Num{2}@, @\Num{3}@), q, @\Num{20}@);
+    line(q, (@\Num{6}@, @\Num{4}@))
+  }
+\end{CITY}
+
+
+\subsection{Kontrola toka}
+\begin{CITY}
+  building "Hotel Fiesa" {
+    for i = 1 to 3 do
+      box((@\Num{1}@, i), (@\Num{2}@, i + @\Num{1}@))
+    done
+  }
+\end{CITY}
+
+\subsection{Abstrakcija}
+\begin{CITY}
+  procedure row(p) {
+    for i = 1 to 3 do
+      box((fst(p), snd(p) + i), (fst(p) + @\Num{1}@, snd(p) + i + @\Num{1}@))
+    done
+  };
+
+  building "Hotel Fiesa" {
+    let square = lambda x -> x * x;
+    row((1, square(2)))
+  }
+\end{CITY}
+
+\subsection{Sintaktični sladkor}
+
+\begin{CITY}
+  road "Oljcna pot" {
+    (@\Num{1}@, @\Num{1}@) -- arc @\Num{20}@ (@\Num{2}@, @\Num{2}@) -- arc @\Num{40}@ (@\Num{3}@, @\Num{1}@);
+    (@\Num{2}@, @\Num{2}@) -- (@\Num{2}@, @\Num{5}@);
+    (@\Num{2}@, @\Num{3}@) -- arc @\Num{20}@ (@\Num{5}@, @\Num{4}@) -- (@\Num{6}@, @\Num{4}@);
+  }
+\end{CITY}
+
+\subsection{Enote}
+\begin{CITY}
+  road "Oljcna pot" {
+    let p = (@\Num{2\_km}@, @\Num{2\_km}@);
+    let q = (@\Num{5000\_m}@, @\Num{4\_km}@);
+
+    arc((@\Num{1\_km}@, @\Num{1\_km}@), p, @\Num{20}@);
+    arc(p, (@\Num{3000\_m}@, @\Num{1\_km}@), @\Num{40}@);
+    line(p, (@\Num{2\_km}@, @\Num{5\_km}@));
+    arc((@\Num{2\_km}@, @\Num{3\_km}@), q, @\Num{20}@);
+    line(q, (@\Num{6\_km}@, @\Num{4\_km}@))
+  }
+\end{CITY}
+
+\subsection{Dodatni elementi}
+\begin{CITY}
+  river "NAME" {
+    @\Var{COMMANDS}@
+  }
+
+  lake "NAME" {
+    @\Var{COMMANDS}@
+  }
+
+  park "NAME" {
+    @\Var{COMMANDS}@
+  }
+
+  field {
+    @\Var{COMMANDS}@
+  }
+
+  tree @\Var{POINT}@
+
+  junction @\Var{POINT}@
+\end{CITY}
 
 \printbibliography
 \end{document}
