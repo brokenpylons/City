@@ -399,6 +399,20 @@ Poleg osnovnih ukazov za izris lahko dodamo še druge: ukaz za izris elipse, del
   curve(@\Var{POINT}@, @\Var{POINT}@, @\Var{CONTROL}@, @\Var{CONTROL}@)
 \end{CITY}
 
+\subsection{Sintaktični sladkor}
+Poleg (ali namesto) ukazov lahko uporabimo tudi bolj strnjeno in elegantno sintakso.
+Tukaj namesto ukaza \Fun{line} uporabljamo operator, prav tako pa združimo dele ceste, ki se držijo skupaj (tako se lahko izognemo podvajanju točk).
+Sintaktični sladkor lahko dodate kjerkoli se vam zdi smiselno.
+
+\begin{CITY}
+  road "Oljcna pot" {
+    (@\Num{1}@, @\Num{1}@) -- bend @\Num{20}@ (@\Num{2}@, @\Num{2}@) -- bend @\Num{40}@ (@\Num{3}@, @\Num{1}@);
+    (@\Num{2}@, @\Num{2}@) -- (@\Num{2}@, @\Num{5}@);
+    (@\Num{2}@, @\Num{3}@) -- bend @\Num{20}@ (@\Num{5}@, @\Num{4}@) -- (@\Num{6}@, @\Num{4}@);
+  }
+\end{CITY}
+
+
 \subsection{Konstrukti}
 
 \subsubsection{Konstante in spremenjljivke}
@@ -506,21 +520,6 @@ Na primer, lahko premaknemo izhodišče in nato lokacije sledečih konstruktov o
   city "Positions" {
     translate (@\Num{5}@, @\Num{3}@);
     marker (@\Num{0}@, @\Num{0}@)
-  }
-\end{CITY}
-
-\subsection{Sintaktični sladkor}
-Poleg (ali namesto) ukazov lahko uporabimo tudi bolj strnjeno in elegantno sintakso.
-Tukaj namesto ukaza \Fun{line} uporabljamo operator, prav tako pa združimo dele ceste, ki se držijo skupaj (tako se lahko izognemo podvajanju točk).
-Sintaktični sladkor lahko dodate kjerkoli se vam zdi smiselno.
-
-\newpage
-
-\begin{CITY}
-  road "Oljcna pot" {
-    (@\Num{1}@, @\Num{1}@) -- bend @\Num{20}@ (@\Num{2}@, @\Num{2}@) -- bend @\Num{40}@ (@\Num{3}@, @\Num{1}@);
-    (@\Num{2}@, @\Num{2}@) -- (@\Num{2}@, @\Num{5}@);
-    (@\Num{2}@, @\Num{3}@) -- bend @\Num{20}@ (@\Num{5}@, @\Num{4}@) -- (@\Num{6}@, @\Num{4}@);
   }
 \end{CITY}
 
